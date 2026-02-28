@@ -146,5 +146,10 @@
     "saved": "تم حفظ الإعدادات.",
     "logo_uploaded": "تم رفع الشعار بنجاح.",
     "logo_deleted": "تم حذف الشعار."
+  },
+  "update": {
+    "available": "يتوفر إصدار جديد!",
+    "view_release": "تفاصيل التحديث",
+    "how_to": "للتحديث: شغّل update.bat (ويندوز) أو update.sh (لينكس/ماك)."
   }
 }

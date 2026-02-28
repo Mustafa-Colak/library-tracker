@@ -146,5 +146,10 @@
     "saved": "Settings saved.",
     "logo_uploaded": "Logo uploaded successfully.",
     "logo_deleted": "Logo deleted."
+  },
+  "update": {
+    "available": "New version available!",
+    "view_release": "Update Details",
+    "how_to": "To update: run update.bat (Windows) or update.sh (Linux/Mac)."
   }
 }

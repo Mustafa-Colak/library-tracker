@@ -58,6 +58,18 @@
       <h1 data-i18n="dashboard.title">Dashboard</h1>
     </div>
 
+    <div id="updateBanner" class="update-banner" style="display:none" data-role="admin">
+      <div class="update-banner-content">
+        <span class="update-icon">&#x1F4E6;</span>
+        <div class="update-text">
+          <strong data-i18n="update.available">Yeni surum mevcut!</strong>
+          <span id="updateVersionInfo"></span>
+        </div>
+        <a id="updateLink" href="#" target="_blank" class="btn btn-sm btn-primary" data-i18n="update.view_release">Guncelleme Detaylari</a>
+        <button class="update-dismiss" onclick="dismissUpdate()" title="&#x2715;">&#x2715;</button>
+      </div>
+    </div>
+
     <div class="stats-grid">
       <div class="stat-card stat-books">
         <div class="stat-icon">&#128214;</div>
@@ -175,10 +187,32 @@ async function returnFromDashboard(loanId) {
   }
 }
 
+async function checkForUpdates() {
+  if (!hasRole('admin')) return;
+  // Don't check if dismissed in this session
+  if (sessionStorage.getItem('update_dismissed')) return;
+  try {
+    const data = await apiGet('/api/system/version');
+    if (data.update_available) {
+      const banner = document.getElementById('updateBanner');
+      document.getElementById('updateVersionInfo').textContent =
+        `v${data.current_version} → v${data.latest_version}`;
+      document.getElementById('updateLink').href = data.release_url;
+      banner.style.display = '';
+    }
+  } catch (e) { /* silently ignore — update check is non-critical */ }
+}
+
+function dismissUpdate() {
+  document.getElementById('updateBanner').style.display = 'none';
+  sessionStorage.setItem('update_dismissed', '1');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await i18nReady;
   if (!initAuth()) return;
   loadDashboard();
+  checkForUpdates();
 });
 </script>
 </body>

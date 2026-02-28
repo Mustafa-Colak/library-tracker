@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from database import engine, Base, SessionLocal
-from routers import books_router, members_router, loans_router, reports_router, auth_router, settings_router
+from routers import books_router, members_router, loans_router, reports_router, auth_router, settings_router, system_router
 from models import User, Setting  # noqa: F401 — ensure tables are created
 
 # Create tables
@@ -27,6 +27,7 @@ app.include_router(members_router)
 app.include_router(loans_router)
 app.include_router(reports_router)
 app.include_router(settings_router)
+app.include_router(system_router)
 
 # Serve uploaded files (logo etc.)
 UPLOAD_DIR = "/app/data/uploads"
