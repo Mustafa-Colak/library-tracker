@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-02-28
+
+### Added
+- Soft delete for books and members: `deleted_at` column replaces hard delete
+- Startup migration adds `deleted_at` column to existing databases automatically
+
+### Changed
+- Book deletion now sets `deleted_at` timestamp instead of removing the record
+- Member deletion now sets `deleted_at` alongside `is_active=False`
+- All list/search queries, reports, and loan creation filter out soft-deleted records
+
 ## [1.2.0] - 2026-02-28
 
 ### Added
@@ -12,14 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic backup on every application startup (max 10 retained, oldest auto-deleted)
 - Backup endpoints: `POST/GET /api/system/backups`, `GET .../download`, `DELETE`
 - Backup i18n keys for Turkish, English, Arabic
-- Soft delete for books and members: `deleted_at` column replaces hard delete
-- Startup migration adds `deleted_at` column to existing databases automatically
 
 ### Changed
 - Version update check now runs once at startup instead of hourly cache (simpler, no repeated GitHub API calls)
-- Book deletion now sets `deleted_at` timestamp instead of removing the record
-- Member deletion now sets `deleted_at` alongside `is_active=False`
-- All list/search queries, reports, and loan creation filter out soft-deleted records
 
 ## [1.1.0] - 2026-02-28
 
