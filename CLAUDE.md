@@ -295,3 +295,11 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 - Frontend'de hiçbir hard-coded Türkçe/İngilizce metin olmamalı
 - Docker build hatasız çalışmalı
 - `docker-compose up -d` sonrası localhost:3000 açılmalı ve kullanılabilir olmalı
+
+## tdcc Komutu (Release Workflow)
+Kullanıcı "tdcc" dediğinde aşağıdaki adımları sırasıyla uygula:
+1. **Doküman güncelle** — README.md, CHANGELOG.md, TODO.md, ROADMAP.md ve benzeri .md dosyalarını mevcut duruma göre güncelle (versiyon badge'leri dahil)
+2. **Versiyon yükselt** — VERSION dosyasını ve ilgili yerlerdeki versiyon referanslarını artır
+3. **Build** — `docker-compose up -d --build` ile projeyi derle
+4. **Commit** — Tüm değişiklikleri anlamlı bir commit mesajıyla kaydet
+5. **Push** — Remote'a gönder

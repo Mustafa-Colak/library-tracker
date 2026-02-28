@@ -145,7 +145,24 @@
     "delete_logo": "Delete Logo",
     "saved": "Settings saved.",
     "logo_uploaded": "Logo uploaded successfully.",
-    "logo_deleted": "Logo deleted."
+    "logo_deleted": "Logo deleted.",
+    "tab_general": "General",
+    "tab_metadata": "Data Management",
+    "tab_backup": "Backup",
+    "profile": "Profile",
+    "profile_updated": "Profile updated."
+  },
+  "metadata": {
+    "authors": "Authors",
+    "publishers": "Publishers",
+    "categories": "Categories",
+    "add": "Add",
+    "name": "Name",
+    "added": "Added successfully.",
+    "updated": "Updated successfully.",
+    "deleted": "Deleted successfully.",
+    "enter_name": "Enter name...",
+    "search": "Search..."
   },
   "backup": {
     "title": "Database Backup",
@@ -158,7 +175,8 @@
     "no_backups": "No backups yet.",
     "created": "Backup created successfully.",
     "deleted": "Backup deleted.",
-    "confirm_delete": "Are you sure you want to delete this backup?"
+    "confirm_delete": "Are you sure you want to delete this backup?",
+    "cannot_delete_last": "Cannot delete the last backup."
   },
   "update": {
     "available": "New version available!",

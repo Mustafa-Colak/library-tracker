@@ -145,7 +145,24 @@
     "delete_logo": "Logoyu Sil",
     "saved": "Ayarlar kaydedildi.",
     "logo_uploaded": "Logo ba\u015far\u0131yla y\u00fcklendi.",
-    "logo_deleted": "Logo silindi."
+    "logo_deleted": "Logo silindi.",
+    "tab_general": "Genel",
+    "tab_metadata": "Veri Y\u00f6netimi",
+    "tab_backup": "Yedekleme",
+    "profile": "Profil",
+    "profile_updated": "Profil g\u00fcncellendi."
+  },
+  "metadata": {
+    "authors": "Yazarlar",
+    "publishers": "Yay\u0131nevleri",
+    "categories": "Kategoriler",
+    "add": "Ekle",
+    "name": "Ad",
+    "added": "Ba\u015far\u0131yla eklendi.",
+    "updated": "Ba\u015far\u0131yla g\u00fcncellendi.",
+    "deleted": "Ba\u015far\u0131yla silindi.",
+    "enter_name": "\u0130sim girin...",
+    "search": "Ara..."
   },
   "backup": {
     "title": "Veritaban\u0131 Yedekleme",
@@ -158,7 +175,8 @@
     "no_backups": "Hen\u00fcz yedek yok.",
     "created": "Yedek ba\u015far\u0131yla olu\u015fturuldu.",
     "deleted": "Yedek silindi.",
-    "confirm_delete": "Bu yede\u011fi silmek istedi\u011finizden emin misiniz?"
+    "confirm_delete": "Bu yede\u011fi silmek istedi\u011finizden emin misiniz?",
+    "cannot_delete_last": "Son yedek silinemez."
   },
   "update": {
     "available": "Yeni s\u00fcr\u00fcm mevcut!",

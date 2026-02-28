@@ -3,7 +3,7 @@
 Okul kütüphaneleri için ücretsiz, açık kaynaklı takip sistemi.
 Free and open-source library management system for schools.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.3.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 

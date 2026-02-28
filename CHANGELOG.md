@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-02-28
+
+### Added
+- Settings page tab system (General, Data Management, Backup)
+- Metadata management UI with sub-tabs for Authors, Publishers, Categories (add/edit/delete/search)
+- Inline profile name editing in sidebar (click name to edit)
+- Profile update API endpoint (`PUT /api/auth/me/profile`)
+- Last backup deletion protection (cannot delete the only remaining backup)
+- `tdcc` release workflow documentation in CLAUDE.md
+
+### Changed
+- Sidebar user info moved from top to footer area (above language switch)
+- Settings page restructured from flat layout to tabbed navigation
+- Metadata tables with search filter, item counts, and 400px scrollable area
+
 ## [1.2.1] - 2026-02-28
 
 ### Added

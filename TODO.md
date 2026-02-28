@@ -6,9 +6,12 @@ Uzun vadeli plan için bkz. [ROADMAP.md](ROADMAP.md)
 ## Öncelikli
 
 - [x] Veritabanı yedekleme — Admin panelinden manuel + startup'ta otomatik backup
+- [x] Soft delete — Üye/kitap silme yerine `deleted_at` işaretleme
+- [x] Ayarlar sekme sistemi — Genel / Veri Yönetimi / Yedekleme
+- [x] Metadata yönetim UI — Yazar/Yayınevi/Kategori CRUD arayüzü
+- [x] Sidebar profil düzenleme — İsim değiştirme
 - [ ] Input validation — ISBN 10/13 format kontrolü (frontend + backend)
 - [ ] Ayarlanabilir ödünç süresi — Settings'e `loan_duration_days` ekle (üye tipine göre)
-- [x] Soft delete — Üye/kitap silme yerine `deleted_at` işaretleme
 
 ## Sonraki
 

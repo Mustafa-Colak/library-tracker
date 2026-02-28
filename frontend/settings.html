@@ -10,7 +10,6 @@
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-logo"><span>&#128218;</span> <span data-i18n="app.name">e-Kutuphane</span></div>
-    <div class="sidebar-user" id="userInfo"></div>
     <nav class="sidebar-nav">
       <a href="/index.html"><span class="icon">&#127968;</span><span data-i18n="nav.dashboard">Dashboard</span></a>
       <a href="/books.html"><span class="icon">&#128214;</span><span data-i18n="nav.books">Kitaplar</span></a>
@@ -21,6 +20,7 @@
       <a href="/settings.html" class="active" data-role="admin"><span class="icon">&#9881;</span><span data-i18n="nav.settings">Ayarlar</span></a>
     </nav>
     <div class="sidebar-footer">
+      <div class="sidebar-user" id="userInfo"></div>
       <div class="lang-switch">
         <button data-lang="tr" onclick="switchLang('tr')">TR</button>
         <button data-lang="en" onclick="switchLang('en')">EN</button>
@@ -36,70 +36,145 @@
       <h1 data-i18n="settings.title">Ayarlar</h1>
     </div>
 
-    <div class="settings-section">
-      <h3 data-i18n="settings.branding">Kurum Markasi</h3>
-      <p class="text-muted" data-i18n="settings.branding_desc">Kurum adi ve logonuzu ayarlayin.</p>
+    <div class="settings-tabs">
+      <button class="active" onclick="switchSettingsTab('tabGeneral')" data-tab="tabGeneral" data-i18n="settings.tab_general">Genel</button>
+      <button onclick="switchSettingsTab('tabMetadata')" data-tab="tabMetadata" data-i18n="settings.tab_metadata">Veri Yonetimi</button>
+      <button onclick="switchSettingsTab('tabBackup')" data-tab="tabBackup" data-i18n="settings.tab_backup">Yedekleme</button>
+    </div>
 
-      <div class="form-group" style="margin-top: 1rem;">
-        <label data-i18n="settings.org_name">Kurum Adi</label>
-        <div style="display: flex; gap: .5rem;">
-          <input type="text" id="orgName" class="form-control" placeholder="Ornek: Ataturk Ilkokulu">
-          <button class="btn btn-primary" onclick="saveOrgName()" data-i18n="common.save">Kaydet</button>
+    <!-- Tab: Genel -->
+    <div id="tabGeneral" class="settings-tab-content active">
+      <div class="settings-section">
+        <h3 data-i18n="settings.branding">Kurum Markasi</h3>
+        <p class="text-muted" data-i18n="settings.branding_desc">Kurum adi ve logonuzu ayarlayin.</p>
+
+        <div class="form-group" style="margin-top: 1rem;">
+          <label data-i18n="settings.org_name">Kurum Adi</label>
+          <div style="display: flex; gap: .5rem;">
+            <input type="text" id="orgName" class="form-control" placeholder="Ornek: Ataturk Ilkokulu">
+            <button class="btn btn-primary" onclick="saveOrgName()" data-i18n="common.save">Kaydet</button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1.5rem;">
+          <label data-i18n="settings.logo">Logo</label>
+          <div class="logo-upload-area">
+            <div id="logoPreview" class="logo-preview">
+              <span class="empty-logo">&#128247;</span>
+            </div>
+            <div class="logo-actions">
+              <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="uploadLogo()">
+              <button class="btn btn-outline" onclick="document.getElementById('logoFile').click()" data-i18n="settings.upload_logo">Logo Yukle</button>
+              <button class="btn btn-danger btn-sm" id="deleteLogo" onclick="deleteLogo()" style="display:none;" data-i18n="settings.delete_logo">Logoyu Sil</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group" style="margin-top: 1.5rem;">
-        <label data-i18n="settings.logo">Logo</label>
-        <div class="logo-upload-area">
-          <div id="logoPreview" class="logo-preview">
-            <span class="empty-logo">&#128247;</span>
+      <div class="settings-section">
+        <h3 data-i18n="auth.change_password">Sifre Degistir</h3>
+        <form id="passwordForm" style="max-width: 400px;">
+          <div class="form-group">
+            <label data-i18n="auth.current_password">Mevcut Sifre</label>
+            <input type="password" id="currentPassword" class="form-control" required>
           </div>
-          <div class="logo-actions">
-            <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="uploadLogo()">
-            <button class="btn btn-outline" onclick="document.getElementById('logoFile').click()" data-i18n="settings.upload_logo">Logo Yukle</button>
-            <button class="btn btn-danger btn-sm" id="deleteLogo" onclick="deleteLogo()" style="display:none;" data-i18n="settings.delete_logo">Logoyu Sil</button>
+          <div class="form-group">
+            <label data-i18n="auth.new_password">Yeni Sifre</label>
+            <input type="password" id="newPassword" class="form-control" required minlength="4">
           </div>
-        </div>
+          <button type="submit" class="btn btn-primary" data-i18n="auth.change_password">Sifre Degistir</button>
+        </form>
       </div>
     </div>
 
-    <div class="settings-section" style="margin-top: 2rem;">
-      <h3 data-i18n="auth.change_password">Sifre Degistir</h3>
-      <form id="passwordForm" style="max-width: 400px;">
-        <div class="form-group">
-          <label data-i18n="auth.current_password">Mevcut Sifre</label>
-          <input type="password" id="currentPassword" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label data-i18n="auth.new_password">Yeni Sifre</label>
-          <input type="password" id="newPassword" class="form-control" required minlength="4">
-        </div>
-        <button type="submit" class="btn btn-primary" data-i18n="auth.change_password">Sifre Degistir</button>
-      </form>
-    </div>
-
-    <div class="settings-section" style="margin-top: 2rem;" data-role="admin">
-      <h3 data-i18n="backup.title">Veritabani Yedekleme</h3>
-      <p class="text-muted" data-i18n="backup.desc">Veritabaninizi yedekleyin ve mevcut yedekleri yonetin.</p>
-
-      <div style="margin-top: 1rem; margin-bottom: 1rem;">
-        <button class="btn btn-primary" onclick="createBackup()" id="btnCreateBackup">
-          <span data-i18n="backup.create">Yedek Olustur</span>
+    <!-- Tab: Veri Yonetimi -->
+    <div id="tabMetadata" class="settings-tab-content">
+      <div class="metadata-tabs">
+        <button class="active" onclick="switchMetadataTab('authors')" data-meta-tab="authors">
+          <span data-i18n="metadata.authors">Yazarlar</span> <span class="metadata-count" id="authorsCount"></span>
+        </button>
+        <button onclick="switchMetadataTab('publishers')" data-meta-tab="publishers">
+          <span data-i18n="metadata.publishers">Yayinevleri</span> <span class="metadata-count" id="publishersCount"></span>
+        </button>
+        <button onclick="switchMetadataTab('categories')" data-meta-tab="categories">
+          <span data-i18n="metadata.categories">Kategoriler</span> <span class="metadata-count" id="categoriesCount"></span>
         </button>
       </div>
 
-      <table class="backup-table" id="backupTable" style="display:none;">
-        <thead>
-          <tr>
-            <th data-i18n="backup.filename">Dosya</th>
-            <th data-i18n="backup.size">Boyut</th>
-            <th data-i18n="backup.date">Tarih</th>
-            <th data-i18n="common.actions">Islemler</th>
-          </tr>
-        </thead>
-        <tbody id="backupList"></tbody>
-      </table>
-      <p id="noBackups" class="text-muted" style="display:none;" data-i18n="backup.no_backups">Henuz yedek yok.</p>
+      <div id="metaPanel_authors" class="metadata-tab-panel active">
+        <div class="metadata-section">
+          <input type="text" class="metadata-search" id="authorsSearch" data-i18n="metadata.search" placeholder="Ara..." oninput="filterMetadata('authors')">
+          <div class="metadata-table-wrap">
+            <table class="metadata-table">
+              <thead><tr><th data-i18n="metadata.name">Ad</th><th data-i18n="common.actions">Islemler</th></tr></thead>
+              <tbody id="authorsList"></tbody>
+            </table>
+          </div>
+          <div class="metadata-add-row">
+            <input type="text" id="addAuthorInput" data-i18n="metadata.enter_name" placeholder="Isim girin...">
+            <button class="btn btn-primary btn-sm" onclick="addMetadataItem('authors')" data-i18n="metadata.add">Ekle</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="metaPanel_publishers" class="metadata-tab-panel">
+        <div class="metadata-section">
+          <input type="text" class="metadata-search" id="publishersSearch" data-i18n="metadata.search" placeholder="Ara..." oninput="filterMetadata('publishers')">
+          <div class="metadata-table-wrap">
+            <table class="metadata-table">
+              <thead><tr><th data-i18n="metadata.name">Ad</th><th data-i18n="common.actions">Islemler</th></tr></thead>
+              <tbody id="publishersList"></tbody>
+            </table>
+          </div>
+          <div class="metadata-add-row">
+            <input type="text" id="addPublisherInput" data-i18n="metadata.enter_name" placeholder="Isim girin...">
+            <button class="btn btn-primary btn-sm" onclick="addMetadataItem('publishers')" data-i18n="metadata.add">Ekle</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="metaPanel_categories" class="metadata-tab-panel">
+        <div class="metadata-section">
+          <input type="text" class="metadata-search" id="categoriesSearch" data-i18n="metadata.search" placeholder="Ara..." oninput="filterMetadata('categories')">
+          <div class="metadata-table-wrap">
+            <table class="metadata-table">
+              <thead><tr><th data-i18n="metadata.name">Ad</th><th data-i18n="common.actions">Islemler</th></tr></thead>
+              <tbody id="categoriesList"></tbody>
+            </table>
+          </div>
+          <div class="metadata-add-row">
+            <input type="text" id="addCategoryInput" data-i18n="metadata.enter_name" placeholder="Isim girin...">
+            <button class="btn btn-primary btn-sm" onclick="addMetadataItem('categories')" data-i18n="metadata.add">Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Yedekleme -->
+    <div id="tabBackup" class="settings-tab-content">
+      <div class="settings-section" data-role="admin">
+        <h3 data-i18n="backup.title">Veritabani Yedekleme</h3>
+        <p class="text-muted" data-i18n="backup.desc">Veritabaninizi yedekleyin ve mevcut yedekleri yonetin.</p>
+
+        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+          <button class="btn btn-primary" onclick="createBackup()" id="btnCreateBackup">
+            <span data-i18n="backup.create">Yedek Olustur</span>
+          </button>
+        </div>
+
+        <table class="backup-table" id="backupTable" style="display:none;">
+          <thead>
+            <tr>
+              <th data-i18n="backup.filename">Dosya</th>
+              <th data-i18n="backup.size">Boyut</th>
+              <th data-i18n="backup.date">Tarih</th>
+              <th data-i18n="common.actions">Islemler</th>
+            </tr>
+          </thead>
+          <tbody id="backupList"></tbody>
+        </table>
+        <p id="noBackups" class="text-muted" style="display:none;" data-i18n="backup.no_backups">Henuz yedek yok.</p>
+      </div>
     </div>
   </main>
 </div>

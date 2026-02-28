@@ -183,5 +183,9 @@ def delete_backup(filename: str, _auth: User = Depends(require_role("admin"))):
     filepath = BACKUP_DIR / filename
     if not filepath.exists():
         raise HTTPException(status_code=404, detail="Backup not found")
+    # Prevent deleting the last remaining backup
+    remaining = list(BACKUP_DIR.glob("library_*.db"))
+    if len(remaining) <= 1:
+        raise HTTPException(status_code=400, detail="Cannot delete the last backup")
     filepath.unlink()
     return {"ok": True}

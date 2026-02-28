@@ -62,12 +62,56 @@ function renderUserInfo() {
     <div class="sidebar-user-info">
       <div class="sidebar-user-avatar">${esc(user.full_name.charAt(0).toUpperCase())}</div>
       <div class="sidebar-user-details">
-        <div class="sidebar-user-name">${esc(user.full_name)}</div>
+        <div class="sidebar-user-name" title="${t('common.edit')}" onclick="editUserName(this)">${esc(user.full_name)}</div>
         <span class="badge ${roleBadge[user.role] || 'badge-role-user'}">${roleLabels[user.role] || user.role}</span>
       </div>
     </div>
     <button class="btn-logout" onclick="logout()" title="${t('auth.logout')}">&#x23FB;</button>
   `;
+}
+
+// Inline edit user name in sidebar
+function editUserName(el) {
+  if (el.querySelector('input')) return;
+  const oldName = el.textContent;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'sidebar-user-name-input';
+  input.value = oldName;
+  el.textContent = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+
+  async function save() {
+    const newName = input.value.trim();
+    if (!newName || newName === oldName) {
+      el.textContent = oldName;
+      return;
+    }
+    try {
+      const user = await apiPut('/api/auth/me/profile', { full_name: newName });
+      // Update localStorage
+      const stored = getUser();
+      if (stored) {
+        stored.full_name = user.full_name;
+        localStorage.setItem('auth_user', JSON.stringify(stored));
+      }
+      renderUserInfo();
+      showToast(t('settings.profile_updated'));
+    } catch (e) {
+      el.textContent = oldName;
+      showToast(e.message, 'error');
+    }
+  }
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); save(); }
+    else if (e.key === 'Escape') { el.textContent = oldName; }
+  });
+  input.addEventListener('blur', () => {
+    setTimeout(() => { if (el.querySelector('input')) save(); }, 150);
+  });
 }
 
 // Show app version in sidebar footer
@@ -103,4 +147,5 @@ window.requireAuth = requireAuth;
 window.hasRole = hasRole;
 window.applyRoleVisibility = applyRoleVisibility;
 window.renderUserInfo = renderUserInfo;
+window.editUserName = editUserName;
 window.initAuth = initAuth;

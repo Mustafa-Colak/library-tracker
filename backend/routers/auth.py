@@ -6,7 +6,7 @@ from dependencies import get_current_user, require_role
 from models.user import User
 from schemas.auth import (
     LoginRequest, TokenResponse, UserCreate, UserUpdate,
-    UserResponse, UserListResponse, PasswordChange,
+    UserResponse, UserListResponse, PasswordChange, ProfileUpdate,
 )
 from services import auth_service
 
@@ -36,6 +36,18 @@ def change_password(
     current_user.hashed_password = auth_service.hash_password(data.new_password)
     db.commit()
     return {"detail": "Password changed"}
+
+
+@router.put("/me/profile", response_model=UserResponse)
+def update_profile(
+    data: ProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    current_user.full_name = data.full_name
+    db.commit()
+    db.refresh(current_user)
+    return current_user
 
 
 # ----- Admin-only user management -----
