@@ -59,14 +59,17 @@
       <h1 data-i18n="dashboard.title">Dashboard</h1>
     </div>
 
-    <div id="updateBanner" class="update-banner" style="display:none" data-role="admin">
+    <div id="updateBanner" class="update-banner" style="display:none">
       <div class="update-banner-content">
         <span class="update-icon">&#x1F4E6;</span>
         <div class="update-text">
           <strong data-i18n="update.available">Yeni surum mevcut!</strong>
           <span id="updateVersionInfo"></span>
         </div>
-        <a id="updateLink" href="#" target="_blank" class="btn btn-sm btn-primary" data-i18n="update.view_release">Guncelleme Detaylari</a>
+        <div class="update-actions">
+          <a id="updateLink" href="#" target="_blank" class="btn btn-sm btn-primary" data-i18n="update.view_release">Guncelleme Detaylari</a>
+          <span class="update-how" data-i18n="update.how_to"></span>
+        </div>
         <button class="update-dismiss" onclick="dismissUpdate()" title="&#x2715;">&#x2715;</button>
       </div>
     </div>
