@@ -11,7 +11,16 @@ from models import User, Setting  # noqa: F401 — ensure tables are created
 # Create tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Library Tracker API", version="1.0.0")
+def _read_version() -> str:
+    for path in ["/app/VERSION", "VERSION", "../VERSION"]:
+        try:
+            with open(path) as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            continue
+    return "0.0.0"
+
+app = FastAPI(title="Library Tracker API", version=_read_version())
 
 app.add_middleware(
     CORSMiddleware,

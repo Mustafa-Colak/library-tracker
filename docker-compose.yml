@@ -5,11 +5,11 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
+      - ./VERSION:/app/VERSION:ro
     environment:
       - DATABASE_URL=sqlite:////app/data/library.db
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production-please}
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-480}
-      - APP_VERSION=1.0.0
     restart: unless-stopped
 
   frontend:

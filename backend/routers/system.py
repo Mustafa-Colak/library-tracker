@@ -7,7 +7,19 @@ from models.user import User
 
 router = APIRouter(prefix="/api/system", tags=["system"])
 
-CURRENT_VERSION = os.getenv("APP_VERSION", "1.0.0")
+
+def _read_version() -> str:
+    """Read version from VERSION file (single source of truth)."""
+    for path in ["/app/VERSION", "VERSION", "../VERSION"]:
+        try:
+            with open(path) as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            continue
+    return os.getenv("APP_VERSION", "0.0.0")
+
+
+CURRENT_VERSION = _read_version()
 GITHUB_REPO = "Mustafa-Colak/library-tracker"
 GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 
