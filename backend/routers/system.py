@@ -16,6 +16,12 @@ _cache = {"version": None, "url": None, "checked_at": 0}
 CACHE_TTL = 3600  # 1 hour
 
 
+@router.get("/info")
+async def system_info():
+    """Public endpoint — returns only current version."""
+    return {"version": CURRENT_VERSION}
+
+
 @router.get("/version")
 async def check_version(_auth: User = Depends(require_role("admin"))):
     import time

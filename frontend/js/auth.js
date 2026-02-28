@@ -70,11 +70,22 @@ function renderUserInfo() {
   `;
 }
 
+// Show app version in sidebar footer
+async function loadAppVersion() {
+  const el = document.getElementById('appVersion');
+  if (!el) return;
+  try {
+    const data = await apiGet('/api/system/info');
+    el.textContent = 'v' + data.version;
+  } catch { el.textContent = ''; }
+}
+
 // Init auth on every page (except login)
 function initAuth() {
   if (!requireAuth()) return false;
   renderUserInfo();
   applyRoleVisibility();
+  loadAppVersion();
   return true;
 }
 

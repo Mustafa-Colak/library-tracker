@@ -88,24 +88,24 @@ body {
   position: absolute;
   bottom: 0;
   left: 0; right: 0;
-  padding: 1rem 1.5rem;
+  padding: .6rem 1rem;
   border-top: 1px solid var(--gray-700);
 }
 
 .lang-switch {
   display: flex;
-  gap: .5rem;
+  gap: .25rem;
 }
 
 .lang-switch button {
   flex: 1;
-  padding: .4rem;
+  padding: .15rem .2rem;
   border: 1px solid var(--gray-600);
   background: transparent;
   color: var(--gray-400);
   border-radius: var(--radius);
   cursor: pointer;
-  font-size: .8rem;
+  font-size: .65rem;
   transition: var(--transition);
 }
 
@@ -115,6 +115,14 @@ body {
   background: var(--primary);
   border-color: var(--primary);
   color: white;
+}
+
+.sidebar-version {
+  text-align: center;
+  margin-top: .35rem;
+  font-size: .6rem;
+  color: var(--gray-500);
+  letter-spacing: .5px;
 }
 
 .main-content {
