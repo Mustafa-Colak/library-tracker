@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from database import engine, Base, SessionLocal
-from routers import books_router, members_router, loans_router, reports_router, auth_router, settings_router, system_router
-from models import User, Setting  # noqa: F401 — ensure tables are created
+from routers import books_router, members_router, loans_router, reports_router, auth_router, settings_router, system_router, metadata_router
+from models import User, Setting, Author, Publisher, Category  # noqa: F401 — ensure tables are created
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -37,6 +37,7 @@ app.include_router(loans_router)
 app.include_router(reports_router)
 app.include_router(settings_router)
 app.include_router(system_router)
+app.include_router(metadata_router)
 
 # Serve uploaded files (logo etc.)
 UPLOAD_DIR = "/app/data/uploads"
@@ -50,8 +51,86 @@ def startup():
     db = SessionLocal()
     try:
         auth_service.create_default_admin(db)
+        _migrate_book_text_to_fk(db)
     finally:
         db.close()
+
+
+def _migrate_book_text_to_fk(db):
+    """Migrate old text-based author/publisher/category columns to FK references."""
+    import sqlalchemy
+    import logging
+    logger = logging.getLogger("library-tracker")
+
+    try:
+        inspector = sqlalchemy.inspect(engine)
+        if "books" not in inspector.get_table_names():
+            return
+        columns = [c["name"] for c in inspector.get_columns("books")]
+    except Exception:
+        return
+
+    # Already migrated or fresh install
+    if "author_id" in columns:
+        return
+
+    # Old schema: text-based columns exist
+    if "author" not in columns:
+        return
+
+    logger.info("Migrating books table from text to FK schema...")
+
+    # Read old data
+    rows = db.execute(sqlalchemy.text("SELECT * FROM books")).fetchall()
+    col_names = columns
+
+    # Create lookup entries
+    for row in rows:
+        row_dict = dict(zip(col_names, row))
+        for name, Model in [("author", Author), ("publisher", Publisher), ("category", Category)]:
+            val = row_dict.get(name)
+            if val:
+                existing = db.query(Model).filter(Model.name == val).first()
+                if not existing:
+                    db.add(Model(name=val))
+    db.commit()
+
+    # Drop old table completely and recreate with new schema
+    db.execute(sqlalchemy.text("DROP TABLE IF EXISTS books"))
+    db.commit()
+
+    # Close session to avoid caching issues
+    db.close()
+
+    # Recreate books table with FK schema
+    Base.metadata.tables["books"].create(engine, checkfirst=True)
+
+    # Reopen session and copy data
+    db2 = SessionLocal()
+    try:
+        for row in rows:
+            row_dict = dict(zip(col_names, row))
+            author = db2.query(Author).filter(Author.name == row_dict.get("author")).first()
+            publisher = db2.query(Publisher).filter(Publisher.name == row_dict.get("publisher")).first() if row_dict.get("publisher") else None
+            category = db2.query(Category).filter(Category.name == row_dict.get("category")).first() if row_dict.get("category") else None
+
+            db2.execute(sqlalchemy.text(
+                "INSERT INTO books (id, isbn, title, author_id, publisher_id, category_id, year, "
+                "shelf_location, total_copies, available_copies, created_at, updated_at) "
+                "VALUES (:id, :isbn, :title, :aid, :pid, :cid, :year, :shelf, :total, :avail, :cat, :uat)"
+            ), {
+                "id": row_dict["id"], "isbn": row_dict["isbn"], "title": row_dict["title"],
+                "aid": author.id if author else None,
+                "pid": publisher.id if publisher else None,
+                "cid": category.id if category else None,
+                "year": row_dict.get("year"), "shelf": row_dict.get("shelf_location"),
+                "total": row_dict.get("total_copies", 1), "avail": row_dict.get("available_copies", 1),
+                "cat": row_dict.get("created_at"), "uat": row_dict.get("updated_at"),
+            })
+        db2.commit()
+        logger.info(f"Migration complete: {len(rows)} books migrated.")
+    finally:
+        db2.close()
 
 
 @app.get("/api/health")

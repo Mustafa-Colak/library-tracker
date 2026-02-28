@@ -24,7 +24,7 @@ def list_books(
 
 @router.get("/suggestions")
 def get_suggestions(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Return distinct authors and publishers for autocomplete."""
+    """Return all authors, publishers, and categories for autocomplete."""
     return book_service.get_suggestions(db)
 
 

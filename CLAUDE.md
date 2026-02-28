@@ -10,7 +10,8 @@ Hedef kullanıcı: Teknik bilgisi olmayan okul personeli.
 - **Frontend:** Vanilla HTML/CSS/JavaScript (framework yok, build adımı yok)
 - **Veritabanı:** SQLite (./data/library.db — volume ile persist)
 - **Container:** Docker + docker-compose
-- **Çok dilli:** i18n JSON dosyaları (tr.json, en.json)
+- **Çok dilli:** i18n JSON dosyaları (tr.json, en.json, ar.json)
+- **Auth:** JWT (python-jose) + bcrypt (passlib), 3 rol: admin/operator/user
 
 ## Dizin Yapısı
 ```
@@ -26,25 +27,38 @@ library-tracker/
 │   ├── database.py              # SQLAlchemy engine, session
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── book.py              # Book modeli
+│   │   ├── book.py              # Book modeli (FK: author_id, publisher_id, category_id)
 │   │   ├── member.py            # Member modeli
-│   │   └── loan.py              # Loan modeli
+│   │   ├── loan.py              # Loan modeli
+│   │   ├── user.py              # User modeli (auth)
+│   │   ├── setting.py           # Setting modeli
+│   │   ├── author.py            # Author lookup tablosu
+│   │   ├── publisher.py         # Publisher lookup tablosu
+│   │   └── category.py          # Category lookup tablosu
 │   ├── schemas/
 │   │   ├── __init__.py
 │   │   ├── book.py              # Pydantic schemas
 │   │   ├── member.py
-│   │   └── loan.py
+│   │   ├── loan.py
+│   │   ├── auth.py              # Auth schemas
+│   │   └── metadata.py          # Metadata CRUD schemas
 │   ├── routers/
 │   │   ├── __init__.py
 │   │   ├── books.py             # /api/books endpoints
 │   │   ├── members.py           # /api/members endpoints
 │   │   ├── loans.py             # /api/loans endpoints
-│   │   └── reports.py           # /api/reports endpoints
+│   │   ├── reports.py           # /api/reports endpoints
+│   │   ├── auth.py              # /api/auth endpoints
+│   │   ├── settings.py          # /api/settings endpoints
+│   │   ├── system.py            # /api/system endpoints
+│   │   └── metadata.py          # /api/metadata endpoints
 │   └── services/
 │       ├── __init__.py
 │       ├── book_service.py
 │       ├── member_service.py
-│       └── loan_service.py
+│       ├── loan_service.py
+│       ├── auth_service.py
+│       └── metadata_service.py  # Author/Publisher/Category CRUD
 ├── frontend/
 │   ├── index.html               # Ana sayfa / dashboard
 │   ├── books.html               # Kitap yönetimi
@@ -54,28 +68,49 @@ library-tracker/
 │   ├── css/
 │   │   └── style.css            # Tüm stiller
 │   ├── js/
-│   │   ├── api.js               # Fetch wrapper, base URL
+│   │   ├── api.js               # Fetch wrapper, base URL, JWT auth
+│   │   ├── auth.js              # Login, role check, token yönetimi
 │   │   ├── i18n.js              # Çok dilli sistem
 │   │   ├── barcode.js           # USB okuyucu input yönetimi
-│   │   ├── books.js
+│   │   ├── books.js             # Autocomplete destekli kitap yönetimi
 │   │   ├── members.js
 │   │   ├── loans.js
+│   │   ├── users.js             # Admin kullanıcı yönetimi
 │   │   └── reports.js
 │   └── locales/
 │       ├── tr.json
-│       └── en.json
+│       ├── en.json
+│       └── ar.json
 └── data/                        # Docker volume (gitignore'da)
     └── .gitkeep
 ```
 
 ## Veritabanı Modelleri
 
+### Author (lookup)
+```
+id, name (unique)
+```
+
+### Publisher (lookup)
+```
+id, name (unique)
+```
+
+### Category (lookup)
+```
+id, name (unique)
+```
+
 ### Book
 ```
-id, isbn (unique), title, author, publisher, year, category, 
-shelf_location, total_copies, available_copies, 
+id, isbn (unique), title,
+author_id (FK → authors), publisher_id (FK → publishers), category_id (FK → categories),
+year, shelf_location, total_copies, available_copies,
 created_at, updated_at
 ```
+> **Not:** Book modeli `@property` ile `author`, `publisher`, `category` string döner (API uyumluluğu).
+> Kitap eklerken/güncellerken API hâlâ string kabul eder, backend otomatik `get_or_create` yapar.
 
 ### Member
 ```
@@ -85,34 +120,63 @@ class_grade, email, phone, is_active, created_at
 
 ### Loan
 ```
-id, book_id (FK), member_id (FK), 
+id, book_id (FK), member_id (FK),
 borrowed_at, due_date (default: borrowed_at + 15 gün),
 returned_at (null ise aktif ödünç),
 status (active/returned/overdue)
 ```
 
+### User
+```
+id, username (unique), full_name, hashed_password,
+role (admin/operator/user), is_active, created_at
+```
+
+### Setting
+```
+id, key (unique), value
+```
+
 ## API Endpoints
+
+### Auth
+- POST   /api/auth/login            — giriş (public)
+- GET    /api/auth/me               — mevcut kullanıcı bilgisi
+- PUT    /api/auth/me/password      — şifre değiştir
+- GET    /api/auth/users            — kullanıcı listesi (admin)
+- POST   /api/auth/users            — kullanıcı ekle (admin)
+- PUT    /api/auth/users/{id}       — kullanıcı güncelle (admin)
+- DELETE /api/auth/users/{id}       — kullanıcı sil (admin)
 
 ### Books
 - GET    /api/books              — liste (search, category, page parametreleri)
 - GET    /api/books/{id}         — detay
-- POST   /api/books              — yeni kitap
-- PUT    /api/books/{id}         — güncelle
-- DELETE /api/books/{id}         — sil
+- POST   /api/books              — yeni kitap (admin/operator)
+- PUT    /api/books/{id}         — güncelle (admin/operator)
+- DELETE /api/books/{id}         — sil (admin)
 - GET    /api/books/barcode/{isbn} — ISBN/barkod ile ara
+- GET    /api/books/suggestions  — autocomplete önerileri (authors, publishers, categories)
+
+### Metadata (Author/Publisher/Category CRUD)
+- GET    /api/metadata/{entity_type}           — listeleme
+- POST   /api/metadata/{entity_type}           — yeni ekle (admin/operator)
+- PUT    /api/metadata/{entity_type}/{item_id} — güncelle (admin/operator)
+- DELETE /api/metadata/{entity_type}/{item_id} — sil (admin, kullanılmıyorsa)
+
+> `entity_type`: `authors`, `publishers`, `categories`
 
 ### Members
 - GET    /api/members            — liste (search, type, page)
 - GET    /api/members/{id}       — detay
-- POST   /api/members            — yeni üye
-- PUT    /api/members/{id}       — güncelle
-- DELETE /api/members/{id}       — sil (soft delete, is_active=false)
+- POST   /api/members            — yeni üye (admin/operator)
+- PUT    /api/members/{id}       — güncelle (admin/operator)
+- DELETE /api/members/{id}       — sil (admin, soft delete)
 - GET    /api/members/barcode/{member_no} — kart barkodu ile ara
 
 ### Loans
 - GET    /api/loans              — liste (status, member_id, book_id, page)
-- POST   /api/loans              — kitap ver
-- PUT    /api/loans/{id}/return  — kitap iade al
+- POST   /api/loans              — kitap ver (admin/operator)
+- PUT    /api/loans/{id}/return  — kitap iade al (admin/operator)
 - GET    /api/loans/overdue      — gecikmiş iadeler
 
 ### Reports
@@ -120,6 +184,16 @@ status (active/returned/overdue)
 - GET    /api/reports/popular-books  — en çok ödünç alınan kitaplar
 - GET    /api/reports/active-loans   — aktif ödünç listesi
 - GET    /api/reports/overdue        — gecikmiş iadeler raporu
+
+### Settings
+- GET    /api/settings               — ayarları getir
+- PUT    /api/settings               — ayarları güncelle (admin)
+- POST   /api/settings/logo          — logo yükle (admin)
+- DELETE /api/settings/logo          — logo sil (admin)
+
+### System
+- GET    /api/system/version         — versiyon bilgisi
+- GET    /api/health                 — sağlık kontrolü
 
 ## Önemli Kurallar
 
@@ -148,6 +222,13 @@ status (active/returned/overdue)
 // Dil tercihi localStorage'da sakla
 // Sayfa yüklenince tüm data-i18n attribute'larını çevir
 ```
+
+### Autocomplete Sistemi (books.js)
+- Yazar, yayınevi, kategori alanları autocomplete destekli
+- `/api/books/suggestions` endpointinden veri çeker
+- Varsayılan kategori listesi: Roman, Bilim, Tarih, Çocuk, Ders Kitabı, Şiir, Ansiklopedi, Hikaye, Biyografi, Diğer
+- Klavye navigasyonu (ok tuşları, Enter, Escape) + fare tıklama
+- Eşleşen metin `<mark>` ile vurgulanır
 
 ### Barkod Yönetimi (barcode.js)
 ```javascript
