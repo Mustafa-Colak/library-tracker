@@ -2,6 +2,7 @@
 data/library.db
 data/*.db
 data/uploads/
+data/backups/
 
 # Environment
 .env

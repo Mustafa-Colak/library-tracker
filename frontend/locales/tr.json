@@ -147,6 +147,19 @@
     "logo_uploaded": "Logo ba\u015far\u0131yla y\u00fcklendi.",
     "logo_deleted": "Logo silindi."
   },
+  "backup": {
+    "title": "Veritaban\u0131 Yedekleme",
+    "desc": "Veritaban\u0131n\u0131z\u0131 yedekleyin ve mevcut yedekleri y\u00f6netin.",
+    "create": "Yedek Olu\u015ftur",
+    "filename": "Dosya",
+    "size": "Boyut",
+    "date": "Tarih",
+    "download": "\u0130ndir",
+    "no_backups": "Hen\u00fcz yedek yok.",
+    "created": "Yedek ba\u015far\u0131yla olu\u015fturuldu.",
+    "deleted": "Yedek silindi.",
+    "confirm_delete": "Bu yede\u011fi silmek istedi\u011finizden emin misiniz?"
+  },
   "update": {
     "available": "Yeni s\u00fcr\u00fcm mevcut!",
     "how_to": "G\u00fcncellemek i\u00e7in: update.bat (Windows) veya update.sh (Linux/Mac) dosyas\u0131n\u0131 \u00e7al\u0131\u015ft\u0131r\u0131n."

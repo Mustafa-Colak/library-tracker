@@ -992,3 +992,30 @@ dialog::backdrop { background: rgba(0,0,0,.4); }
 [dir="rtl"] .update-banner-content {
   flex-direction: row-reverse;
 }
+
+/* ===== Backup Table ===== */
+.backup-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+.backup-table th,
+.backup-table td {
+  padding: .5rem .75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+.backup-table th {
+  font-weight: 600;
+  color: var(--gray-500);
+  font-size: .75rem;
+  text-transform: uppercase;
+}
+.backup-table .backup-actions {
+  display: flex;
+  gap: .25rem;
+}
+[dir="rtl"] .backup-table th,
+[dir="rtl"] .backup-table td {
+  text-align: right;
+}

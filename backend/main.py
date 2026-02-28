@@ -48,7 +48,7 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 @app.on_event("startup")
 async def startup():
     from services import auth_service
-    from routers.system import check_github_release
+    from routers.system import check_github_release, auto_backup_on_startup
 
     db = SessionLocal()
     try:
@@ -56,6 +56,9 @@ async def startup():
         _migrate_book_text_to_fk(db)
     finally:
         db.close()
+
+    # Auto-backup database on every startup
+    auto_backup_on_startup()
 
     # Check for updates once at startup
     await check_github_release()

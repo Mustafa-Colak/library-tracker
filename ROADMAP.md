@@ -2,7 +2,7 @@
 
 ## v1.2.0 — Veri Güvenliği & Temel İyileştirmeler
 
-- [ ] **Veritabanı yedekleme** — Otomatik günlük backup (cron job + SQLite `.backup`), admin panelinden manuel yedek alma
+- [x] **Veritabanı yedekleme** — Startup'ta otomatik backup, admin panelinden manuel yedek alma/indirme/silme (max 10)
 - [ ] **Soft delete** — Üye/kitap silindiğinde `deleted_at` ile işaretleme (audit için geri dönülebilir)
 - [ ] **Input validation** — ISBN format kontrolü, telefon/e-posta doğrulama (frontend + backend)
 - [ ] **Ayarlanabilir ödünç süresi** — Öğrenci/öğretmen/personel için farklı süreler (şu an 15 gün hardcoded)

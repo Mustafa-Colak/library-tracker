@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0] - 2026-02-28
 
+### Added
+- Database backup system: create, list, download, delete backups via API and Settings UI
+- Automatic backup on every application startup (max 10 retained, oldest auto-deleted)
+- Backup endpoints: `POST/GET /api/system/backups`, `GET .../download`, `DELETE`
+- Backup i18n keys for Turkish, English, Arabic
+
 ### Changed
 - Version update check now runs once at startup instead of hourly cache (simpler, no repeated GitHub API calls)
 

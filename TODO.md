@@ -5,7 +5,7 @@ Uzun vadeli plan için bkz. [ROADMAP.md](ROADMAP.md)
 
 ## Öncelikli
 
-- [ ] Veritabanı yedekleme — Admin panelinden manuel backup butonu
+- [x] Veritabanı yedekleme — Admin panelinden manuel + startup'ta otomatik backup
 - [ ] Input validation — ISBN 10/13 format kontrolü (frontend + backend)
 - [ ] Ayarlanabilir ödünç süresi — Settings'e `loan_duration_days` ekle (üye tipine göre)
 - [ ] Soft delete — Üye/kitap silme yerine `deleted_at` işaretleme

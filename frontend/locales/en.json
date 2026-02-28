@@ -147,6 +147,19 @@
     "logo_uploaded": "Logo uploaded successfully.",
     "logo_deleted": "Logo deleted."
   },
+  "backup": {
+    "title": "Database Backup",
+    "desc": "Back up your database and manage existing backups.",
+    "create": "Create Backup",
+    "filename": "File",
+    "size": "Size",
+    "date": "Date",
+    "download": "Download",
+    "no_backups": "No backups yet.",
+    "created": "Backup created successfully.",
+    "deleted": "Backup deleted.",
+    "confirm_delete": "Are you sure you want to delete this backup?"
+  },
   "update": {
     "available": "New version available!",
     "how_to": "To update: run update.bat (Windows) or update.sh (Linux/Mac)."
