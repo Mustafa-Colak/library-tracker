@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-02-28
+
+### Added
+- Author, Publisher, Category lookup tables (FK normalization)
+- Metadata CRUD API (`/api/metadata/{authors,publishers,categories}`)
+- Autocomplete for author, publisher, category fields on book form
+- Default category list (Roman, Bilim, Tarih, etc.)
+- ROADMAP.md with versioned development plan
+- CHANGELOG.md, TODO.md for project tracking
+- GitHub release for v1.1.0
+
+### Changed
+- Book model: text fields converted to FK relationships (`author_id`, `publisher_id`, `category_id`)
+- API still accepts strings; backend auto-resolves via `get_or_create`
+- Startup migration logic for old schema to FK schema
+
 ## [1.0.0] - 2026-02-28
 
 ### Added
