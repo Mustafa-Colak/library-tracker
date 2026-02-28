@@ -1,4 +1,5 @@
 import os
+import logging
 import httpx
 from fastapi import APIRouter, Depends
 
@@ -6,6 +7,7 @@ from dependencies import require_role
 from models.user import User
 
 router = APIRouter(prefix="/api/system", tags=["system"])
+logger = logging.getLogger("library-tracker")
 
 
 def _read_version() -> str:
@@ -23,9 +25,25 @@ CURRENT_VERSION = _read_version()
 GITHUB_REPO = "Mustafa-Colak/library-tracker"
 GITHUB_API = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 
-# Cache: avoid hitting GitHub API on every request
-_cache = {"version": None, "url": None, "checked_at": 0}
-CACHE_TTL = 3600  # 1 hour
+# Checked once at startup, never refreshed until next restart
+_latest = {"version": None, "url": None}
+
+
+async def check_github_release():
+    """Fetch latest release from GitHub. Called once at startup."""
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(GITHUB_API, headers={
+                "Accept": "application/vnd.github.v3+json",
+            })
+            if resp.status_code == 200:
+                data = resp.json()
+                tag = data.get("tag_name", "")
+                _latest["version"] = tag.lstrip("v")
+                _latest["url"] = data.get("html_url", "")
+                logger.info(f"GitHub release check: latest={_latest['version']}, current={CURRENT_VERSION}")
+    except Exception:
+        logger.warning("GitHub release check failed (network error)")
 
 
 @router.get("/info")
@@ -36,29 +54,8 @@ async def system_info():
 
 @router.get("/version")
 async def check_version(_auth: User = Depends(require_role("admin"))):
-    import time
-    now = time.time()
-
-    latest_version = _cache["version"]
-    release_url = _cache["url"]
-
-    # Fetch from GitHub if cache expired
-    if latest_version is None or (now - _cache["checked_at"]) > CACHE_TTL:
-        try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                resp = await client.get(GITHUB_API, headers={
-                    "Accept": "application/vnd.github.v3+json",
-                })
-                if resp.status_code == 200:
-                    data = resp.json()
-                    tag = data.get("tag_name", "")
-                    latest_version = tag.lstrip("v")
-                    release_url = data.get("html_url", "")
-                    _cache["version"] = latest_version
-                    _cache["url"] = release_url
-                    _cache["checked_at"] = now
-        except Exception:
-            pass  # Network error — return current info only
+    latest_version = _latest["version"]
+    release_url = _latest["url"]
 
     update_available = False
     if latest_version:

@@ -46,14 +46,19 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 
 @app.on_event("startup")
-def startup():
+async def startup():
     from services import auth_service
+    from routers.system import check_github_release
+
     db = SessionLocal()
     try:
         auth_service.create_default_admin(db)
         _migrate_book_text_to_fk(db)
     finally:
         db.close()
+
+    # Check for updates once at startup
+    await check_github_release()
 
 
 def _migrate_book_text_to_fk(db):
