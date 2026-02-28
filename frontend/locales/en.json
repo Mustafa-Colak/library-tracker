@@ -149,7 +149,6 @@
   },
   "update": {
     "available": "New version available!",
-    "view_release": "Update Details",
     "how_to": "To update: run update.bat (Windows) or update.sh (Linux/Mac)."
   }
 }

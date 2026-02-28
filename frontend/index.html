@@ -65,9 +65,6 @@
         <div class="update-text">
           <strong data-i18n="update.available">Yeni surum mevcut!</strong>
           <span id="updateVersionInfo"></span>
-        </div>
-        <div class="update-actions">
-          <a id="updateLink" href="#" target="_blank" class="btn btn-sm btn-primary" data-i18n="update.view_release">Guncelleme Detaylari</a>
           <span class="update-how" data-i18n="update.how_to"></span>
         </div>
         <button class="update-dismiss" onclick="dismissUpdate()" title="&#x2715;">&#x2715;</button>
@@ -198,11 +195,9 @@ async function checkForUpdates() {
   try {
     const data = await apiGet('/api/system/version');
     if (data.update_available) {
-      const banner = document.getElementById('updateBanner');
       document.getElementById('updateVersionInfo').textContent =
         `v${data.current_version} → v${data.latest_version}`;
-      document.getElementById('updateLink').href = data.release_url;
-      banner.style.display = '';
+      document.getElementById('updateBanner').style.display = '';
     }
   } catch (e) { /* silently ignore — update check is non-critical */ }
 }

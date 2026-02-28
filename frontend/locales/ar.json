@@ -149,7 +149,6 @@
   },
   "update": {
     "available": "يتوفر إصدار جديد!",
-    "view_release": "تفاصيل التحديث",
     "how_to": "للتحديث: شغّل update.bat (ويندوز) أو update.sh (لينكس/ماك)."
   }
 }
