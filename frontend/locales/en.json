@@ -83,7 +83,8 @@
     "all_categories": "All Categories",
     "added": "Book added successfully.",
     "updated": "Book updated successfully.",
-    "deleted": "Book deleted."
+    "deleted": "Book deleted.",
+    "invalid_isbn": "Invalid ISBN format (must be 10 or 13 digits)"
   },
   "member": {
     "title": "Member Management",
@@ -150,7 +151,11 @@
     "tab_metadata": "Data Management",
     "tab_backup": "Backup",
     "profile": "Profile",
-    "profile_updated": "Profile updated."
+    "profile_updated": "Profile updated.",
+    "loan_durations": "Loan Durations",
+    "loan_durations_desc": "Set loan durations in days for each member type.",
+    "loan_durations_saved": "Loan durations saved.",
+    "days": "days"
   },
   "metadata": {
     "authors": "Authors",

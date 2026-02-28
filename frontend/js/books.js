@@ -117,6 +117,17 @@ function setupAutocomplete(inputId, listId, getItems) {
   });
 }
 
+/* ---------- ISBN Validation ---------- */
+function validateISBN(isbn) {
+  const clean = isbn.replace(/[-\s]/g, '');
+  if (clean.length === 10) {
+    return /^\d{9}[\dX]$/.test(clean);
+  } else if (clean.length === 13) {
+    return /^\d{13}$/.test(clean);
+  }
+  return false;
+}
+
 /* ---------- Books CRUD ---------- */
 
 async function loadBooks(page = 1) {
@@ -194,8 +205,14 @@ async function editBook(id) {
 async function saveBook(e) {
   e.preventDefault();
   const id = document.getElementById('bookId').value;
+  const isbnVal = document.getElementById('isbn').value.trim();
+  if (!validateISBN(isbnVal)) {
+    showToast(t('book.invalid_isbn'), 'error');
+    return;
+  }
+
   const data = {
-    isbn: document.getElementById('isbn').value,
+    isbn: isbnVal,
     title: document.getElementById('title').value,
     author: document.getElementById('author').value,
     publisher: document.getElementById('publisher').value || null,

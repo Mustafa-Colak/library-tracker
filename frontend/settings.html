@@ -72,6 +72,35 @@
       </div>
 
       <div class="settings-section">
+        <h3 data-i18n="settings.loan_durations">Odunc Sureleri</h3>
+        <p class="text-muted" data-i18n="settings.loan_durations_desc">Uye tipine gore odunc surelerini gun olarak ayarlayin.</p>
+        <div class="loan-duration-grid">
+          <div class="loan-duration-item">
+            <label data-i18n="member.student">Ogrenci</label>
+            <div class="loan-duration-input">
+              <input type="number" id="loanDaysStudent" class="form-control" min="1" max="365">
+              <span class="input-suffix" data-i18n="settings.days">gun</span>
+            </div>
+          </div>
+          <div class="loan-duration-item">
+            <label data-i18n="member.teacher">Ogretmen</label>
+            <div class="loan-duration-input">
+              <input type="number" id="loanDaysTeacher" class="form-control" min="1" max="365">
+              <span class="input-suffix" data-i18n="settings.days">gun</span>
+            </div>
+          </div>
+          <div class="loan-duration-item">
+            <label data-i18n="member.staff">Personel</label>
+            <div class="loan-duration-input">
+              <input type="number" id="loanDaysStaff" class="form-control" min="1" max="365">
+              <span class="input-suffix" data-i18n="settings.days">gun</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveLoanDurations()" data-i18n="common.save">Kaydet</button>
+      </div>
+
+      <div class="settings-section">
         <h3 data-i18n="auth.change_password">Sifre Degistir</h3>
         <form id="passwordForm" style="max-width: 400px;">
           <div class="form-group">

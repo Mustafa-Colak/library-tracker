@@ -83,7 +83,8 @@
     "all_categories": "جميع التصنيفات",
     "added": "تمت إضافة الكتاب بنجاح.",
     "updated": "تم تحديث الكتاب بنجاح.",
-    "deleted": "تم حذف الكتاب."
+    "deleted": "تم حذف الكتاب.",
+    "invalid_isbn": "صيغة ISBN غير صالحة (يجب أن يكون 10 أو 13 رقمًا)"
   },
   "member": {
     "title": "إدارة الأعضاء",
@@ -150,7 +151,11 @@
     "tab_metadata": "إدارة البيانات",
     "tab_backup": "النسخ الاحتياطي",
     "profile": "الملف الشخصي",
-    "profile_updated": "تم تحديث الملف الشخصي."
+    "profile_updated": "تم تحديث الملف الشخصي.",
+    "loan_durations": "مدد الإعارة",
+    "loan_durations_desc": "حدد مدة الإعارة بالأيام لكل نوع عضوية.",
+    "loan_durations_saved": "تم حفظ مدد الإعارة.",
+    "days": "يوم"
   },
   "metadata": {
     "authors": "المؤلفون",

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-02-28
+
+### Added
+- ISBN validation: ISBN-10 and ISBN-13 format check (backend Pydantic validator + frontend validation)
+- Adjustable loan durations per member type (student/teacher/staff) via Settings > General
+- Loan duration API endpoints (`GET/PUT /api/settings/loan-durations`)
+- Loan duration UI with 3-column grid layout in Settings page
+- i18n keys for ISBN validation and loan duration features (TR/EN/AR)
+
+### Changed
+- Loan creation now uses member-type-specific duration from settings (was hardcoded 15 days)
+- Book form validates ISBN format before API call
+
 ## [1.3.0] - 2026-02-28
 
 ### Added

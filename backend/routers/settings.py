@@ -81,3 +81,30 @@ def delete_logo(
             os.remove(filepath)
         set_setting(db, "logo_url", "")
     return {"ok": True}
+
+
+# ----- Loan Duration Settings -----
+
+LOAN_DEFAULTS = {"student": "15", "teacher": "30", "staff": "30"}
+
+
+@router.get("/loan-durations")
+def get_loan_durations(db: Session = Depends(get_db)):
+    return {
+        k: int(get_setting(db, f"loan_days_{k}", v))
+        for k, v in LOAN_DEFAULTS.items()
+    }
+
+
+@router.put("/loan-durations")
+def update_loan_durations(
+    data: dict,
+    db: Session = Depends(get_db),
+    _user=Depends(require_role("admin")),
+):
+    for k, default in LOAN_DEFAULTS.items():
+        val = data.get(k)
+        if val is not None:
+            days = max(1, min(365, int(val)))
+            set_setting(db, f"loan_days_{k}", str(days))
+    return get_loan_durations(db)

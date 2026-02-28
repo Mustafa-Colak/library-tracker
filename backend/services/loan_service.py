@@ -44,12 +44,17 @@ def create_loan(db: Session, book_id: int, member_id: int):
     if existing:
         raise HTTPException(status_code=400, detail="Member already has this book on loan")
 
+    # Get loan duration based on member type
+    from routers.settings import get_setting
+    key = f"loan_days_{member.member_type}"
+    days = int(get_setting(db, key, str(LOAN_DAYS)))
+
     now = datetime.utcnow()
     loan = Loan(
         book_id=book_id,
         member_id=member_id,
         borrowed_at=now,
-        due_date=now + timedelta(days=LOAN_DAYS),
+        due_date=now + timedelta(days=days),
         status="active",
     )
     book.available_copies -= 1

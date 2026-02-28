@@ -91,6 +91,33 @@ function updateAppName(orgName) {
   if (el && orgName) el.textContent = orgName;
 }
 
+// --- Loan Durations ---
+
+async function loadLoanDurations() {
+  try {
+    const data = await apiGet('/api/settings/loan-durations');
+    document.getElementById('loanDaysStudent').value = data.student;
+    document.getElementById('loanDaysTeacher').value = data.teacher;
+    document.getElementById('loanDaysStaff').value = data.staff;
+  } catch (e) {
+    // silently ignore if not admin
+  }
+}
+
+async function saveLoanDurations() {
+  const body = {
+    student: parseInt(document.getElementById('loanDaysStudent').value) || 15,
+    teacher: parseInt(document.getElementById('loanDaysTeacher').value) || 30,
+    staff: parseInt(document.getElementById('loanDaysStaff').value) || 30,
+  };
+  try {
+    await apiPut('/api/settings/loan-durations', body);
+    showToast(t('settings.loan_durations_saved'));
+  } catch (e) {
+    showToast(e.message, 'error');
+  }
+}
+
 // --- Tab Switching ---
 
 function switchSettingsTab(tabId) {
@@ -351,6 +378,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
   loadBranding();
+  loadLoanDurations();
   loadBackups();
   loadAllMetadata();
   document.getElementById('passwordForm')?.addEventListener('submit', changePassword);

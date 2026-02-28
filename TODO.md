@@ -10,8 +10,8 @@ Uzun vadeli plan için bkz. [ROADMAP.md](ROADMAP.md)
 - [x] Ayarlar sekme sistemi — Genel / Veri Yönetimi / Yedekleme
 - [x] Metadata yönetim UI — Yazar/Yayınevi/Kategori CRUD arayüzü
 - [x] Sidebar profil düzenleme — İsim değiştirme
-- [ ] Input validation — ISBN 10/13 format kontrolü (frontend + backend)
-- [ ] Ayarlanabilir ödünç süresi — Settings'e `loan_duration_days` ekle (üye tipine göre)
+- [x] Input validation — ISBN 10/13 format kontrolü (frontend + backend)
+- [x] Ayarlanabilir ödünç süresi — Üye tipine göre farklı ödünç süreleri (Ayarlar UI + backend)
 
 ## Sonraki
 

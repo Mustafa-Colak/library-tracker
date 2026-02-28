@@ -83,7 +83,8 @@
     "all_categories": "T\u00fcm Kategoriler",
     "added": "Kitap ba\u015far\u0131yla eklendi.",
     "updated": "Kitap ba\u015far\u0131yla g\u00fcncellendi.",
-    "deleted": "Kitap silindi."
+    "deleted": "Kitap silindi.",
+    "invalid_isbn": "Ge\u00e7ersiz ISBN format\u0131 (10 veya 13 hane olmal\u0131)"
   },
   "member": {
     "title": "\u00dcye Y\u00f6netimi",
@@ -150,7 +151,11 @@
     "tab_metadata": "Veri Y\u00f6netimi",
     "tab_backup": "Yedekleme",
     "profile": "Profil",
-    "profile_updated": "Profil g\u00fcncellendi."
+    "profile_updated": "Profil g\u00fcncellendi.",
+    "loan_durations": "\u00d6d\u00fcn\u00e7 S\u00fcreleri",
+    "loan_durations_desc": "\u00dcye tipine g\u00f6re \u00f6d\u00fcn\u00e7 s\u00fcrelerini g\u00fcn olarak ayarlay\u0131n.",
+    "loan_durations_saved": "\u00d6d\u00fcn\u00e7 s\u00fcreleri kaydedildi.",
+    "days": "g\u00fcn"
   },
   "metadata": {
     "authors": "Yazarlar",

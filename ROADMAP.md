@@ -4,8 +4,8 @@
 
 - [x] **Veritabanı yedekleme** — Startup'ta otomatik backup, admin panelinden manuel yedek alma/indirme/silme (max 10)
 - [x] **Soft delete** — Üye/kitap silindiğinde `deleted_at` ile işaretleme (audit için geri dönülebilir)
-- [ ] **Input validation** — ISBN format kontrolü, telefon/e-posta doğrulama (frontend + backend)
-- [ ] **Ayarlanabilir ödünç süresi** — Öğrenci/öğretmen/personel için farklı süreler (şu an 15 gün hardcoded)
+- [x] **Input validation** — ISBN format kontrolü (frontend + backend)
+- [x] **Ayarlanabilir ödünç süresi** — Öğrenci/öğretmen/personel için farklı süreler (Ayarlar UI)
 
 ## v1.3.0 — Ayarlar & Metadata Yönetimi
 
