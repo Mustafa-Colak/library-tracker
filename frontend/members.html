@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-Kutuphane</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span>&#128218;</span> <span data-i18n="app.name">e-Kutuphane</span></div>
+    <div class="sidebar-user" id="userInfo"></div>
+    <nav class="sidebar-nav">
+      <a href="/index.html"><span class="icon">&#127968;</span><span data-i18n="nav.dashboard">Dashboard</span></a>
+      <a href="/books.html"><span class="icon">&#128214;</span><span data-i18n="nav.books">Kitaplar</span></a>
+      <a href="/members.html" class="active"><span class="icon">&#128101;</span><span data-i18n="nav.members">Uyeler</span></a>
+      <a href="/loans.html"><span class="icon">&#128260;</span><span data-i18n="nav.loans">Odunc Islemleri</span></a>
+      <a href="/reports.html" data-role="admin,operator"><span class="icon">&#128202;</span><span data-i18n="nav.reports">Raporlar</span></a>
+      <a href="/users.html" data-role="admin"><span class="icon">&#128100;</span><span data-i18n="nav.users">Kullanicilar</span></a>
+      <a href="/settings.html" data-role="admin"><span class="icon">&#9881;</span><span data-i18n="nav.settings">Ayarlar</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="lang-switch">
+        <button data-lang="tr" onclick="switchLang('tr')">TR</button>
+        <button data-lang="en" onclick="switchLang('en')">EN</button>
+        <button data-lang="ar" onclick="switchLang('ar')">AR</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">&#9776;</button>
+      <h1 data-i18n="member.title">Uye Yonetimi</h1>
+      <button class="btn btn-primary" onclick="openAddMember()" data-role="admin,operator">+ <span data-i18n="member.add">Uye Ekle</span></button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" class="form-control" data-i18n="common.search" placeholder="Ara..." onkeyup="if(event.key==='Enter')searchMembers()">
+      <select id="typeFilter" class="form-control" onchange="searchMembers()">
+        <option value="" data-i18n="member.all_types">Tum Tipler</option>
+        <option value="student" data-i18n="member.student">Ogrenci</option>
+        <option value="teacher" data-i18n="member.teacher">Ogretmen</option>
+        <option value="staff" data-i18n="member.staff">Personel</option>
+      </select>
+      <button class="btn btn-outline" onclick="searchMembers()" data-i18n="common.search_btn">Ara</button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="member.member_no">Uye No</th>
+            <th data-i18n="member.full_name">Ad Soyad</th>
+            <th data-i18n="member.type">Tip</th>
+            <th data-i18n="member.class_grade">Sinif</th>
+            <th data-i18n="member.email">E-posta</th>
+            <th data-i18n="member.phone">Telefon</th>
+            <th data-i18n="common.actions">Islemler</th>
+          </tr>
+        </thead>
+        <tbody id="membersTable"></tbody>
+      </table>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </main>
+</div>
+
+<dialog id="memberDialog">
+  <div class="dialog-header">
+    <h2 id="memberDialogTitle" data-i18n="member.add">Uye Ekle</h2>
+    <button class="dialog-close" onclick="document.getElementById('memberDialog').close()">&times;</button>
+  </div>
+  <form id="memberForm">
+    <div class="dialog-body">
+      <input type="hidden" id="memberId">
+      <div class="form-group">
+        <label data-i18n="member.member_no">Uye No</label>
+        <input type="text" id="memberNo" class="form-control" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="member.name">Ad</label>
+          <input type="text" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label data-i18n="member.surname">Soyad</label>
+          <input type="text" id="surname" class="form-control" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="member.type">Uye Tipi</label>
+          <select id="memberType" class="form-control" required>
+            <option value="student" data-i18n="member.student">Ogrenci</option>
+            <option value="teacher" data-i18n="member.teacher">Ogretmen</option>
+            <option value="staff" data-i18n="member.staff">Personel</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="member.class_grade">Sinif</label>
+          <input type="text" id="classGrade" class="form-control">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label data-i18n="member.email">E-posta</label>
+          <input type="email" id="email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label data-i18n="member.phone">Telefon</label>
+          <input type="text" id="phone" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn btn-outline" onclick="document.getElementById('memberDialog').close()" data-i18n="common.cancel">Iptal</button>
+      <button type="submit" class="btn btn-primary" data-i18n="common.save">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="/js/api.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/members.js"></script>
+</body>
+</html>

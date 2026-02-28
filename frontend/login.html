@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-Kutuphane</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+
+<div class="login-card">
+  <div class="login-logo">
+    <span>&#128218;</span>
+    <span data-i18n="app.name">e-Kutuphane</span>
+  </div>
+  <p class="login-subtitle" data-i18n="auth.login_subtitle">Devam etmek icin giris yapin</p>
+
+  <div id="loginError" class="login-error" style="display:none;"></div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <label data-i18n="auth.username">Kullanici Adi</label>
+      <input type="text" id="username" class="form-control" required autocomplete="username" autofocus>
+    </div>
+    <div class="form-group">
+      <label data-i18n="auth.password">Sifre</label>
+      <input type="password" id="password" class="form-control" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-primary btn-login" id="loginBtn">
+      <span data-i18n="auth.login">Giris Yap</span>
+    </button>
+  </form>
+
+  <div class="login-footer">
+    <div class="lang-switch">
+      <button data-lang="tr" onclick="switchLang('tr')">TR</button>
+      <button data-lang="en" onclick="switchLang('en')">EN</button>
+      <button data-lang="ar" onclick="switchLang('ar')">AR</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/i18n.js"></script>
+<script>
+// If already logged in, redirect
+if (localStorage.getItem('auth_token')) {
+  window.location.href = '/index.html';
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+
+  try {
+    const res = await api('/api/auth/login', {
+      method: 'POST',
+      body: {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value,
+      }
+    });
+    localStorage.setItem('auth_token', res.access_token);
+    localStorage.setItem('auth_user', JSON.stringify(res.user));
+    window.location.href = '/index.html';
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
