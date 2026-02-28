@@ -15,9 +15,9 @@ router = APIRouter(prefix="/api/reports", tags=["reports"])
 
 @router.get("/summary")
 def summary(db: Session = Depends(get_db), _auth: User = Depends(require_role("admin", "operator"))):
-    total_books = db.query(func.sum(Book.total_copies)).scalar() or 0
-    unique_titles = db.query(func.count(Book.id)).scalar() or 0
-    total_members = db.query(func.count(Member.id)).filter(Member.is_active == True).scalar() or 0
+    total_books = db.query(func.sum(Book.total_copies)).filter(Book.deleted_at.is_(None)).scalar() or 0
+    unique_titles = db.query(func.count(Book.id)).filter(Book.deleted_at.is_(None)).scalar() or 0
+    total_members = db.query(func.count(Member.id)).filter(Member.is_active == True, Member.deleted_at.is_(None)).scalar() or 0
     active_loans = db.query(func.count(Loan.id)).filter(Loan.status == "active").scalar() or 0
     overdue_loans = db.query(func.count(Loan.id)).filter(Loan.status == "overdue").scalar() or 0
 
@@ -47,6 +47,7 @@ def popular_books(db: Session = Depends(get_db), _auth: User = Depends(require_r
     results = (
         db.query(Book.id, Book.title, Book.author, Book.isbn, func.count(Loan.id).label("loan_count"))
         .join(Loan, Loan.book_id == Book.id)
+        .filter(Book.deleted_at.is_(None))
         .group_by(Book.id)
         .order_by(func.count(Loan.id).desc())
         .limit(10)

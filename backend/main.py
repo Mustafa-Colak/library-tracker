@@ -54,6 +54,7 @@ async def startup():
     try:
         auth_service.create_default_admin(db)
         _migrate_book_text_to_fk(db)
+        _migrate_soft_delete_columns(db)
     finally:
         db.close()
 
@@ -62,6 +63,28 @@ async def startup():
 
     # Check for updates once at startup
     await check_github_release()
+
+
+def _migrate_soft_delete_columns(db):
+    """Add deleted_at column to books and members tables if missing."""
+    import sqlalchemy
+    import logging
+    logger = logging.getLogger("library-tracker")
+
+    try:
+        inspector = sqlalchemy.inspect(engine)
+        for table_name in ("books", "members"):
+            if table_name not in inspector.get_table_names():
+                continue
+            columns = [c["name"] for c in inspector.get_columns(table_name)]
+            if "deleted_at" not in columns:
+                db.execute(sqlalchemy.text(
+                    f"ALTER TABLE {table_name} ADD COLUMN deleted_at DATETIME NULL"
+                ))
+                db.commit()
+                logger.info(f"Added deleted_at column to {table_name}")
+    except Exception as e:
+        logger.warning(f"Soft delete migration failed: {e}")
 
 
 def _migrate_book_text_to_fk(db):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi import HTTPException
@@ -8,7 +9,7 @@ from schemas.member import MemberCreate, MemberUpdate
 
 def get_members(db: Session, search: str | None = None, member_type: str | None = None,
                 page: int = 1, limit: int = 20):
-    query = db.query(Member).filter(Member.is_active == True)
+    query = db.query(Member).filter(Member.is_active == True, Member.deleted_at.is_(None))
     if search:
         term = f"%{search}%"
         query = query.filter(
@@ -23,14 +24,14 @@ def get_members(db: Session, search: str | None = None, member_type: str | None 
 
 
 def get_member(db: Session, member_id: int):
-    member = db.query(Member).filter(Member.id == member_id).first()
+    member = db.query(Member).filter(Member.id == member_id, Member.deleted_at.is_(None)).first()
     if not member:
         raise HTTPException(status_code=404, detail="Member not found")
     return member
 
 
 def get_member_by_no(db: Session, member_no: str):
-    member = db.query(Member).filter(Member.member_no == member_no, Member.is_active == True).first()
+    member = db.query(Member).filter(Member.member_no == member_no, Member.is_active == True, Member.deleted_at.is_(None)).first()
     if not member:
         raise HTTPException(status_code=404, detail="Member not found")
     return member
@@ -60,5 +61,6 @@ def update_member(db: Session, member_id: int, data: MemberUpdate):
 def delete_member(db: Session, member_id: int):
     member = get_member(db, member_id)
     member.is_active = False
+    member.deleted_at = datetime.utcnow()
     db.commit()
     return {"detail": "Member deactivated"}

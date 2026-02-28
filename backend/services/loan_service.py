@@ -28,13 +28,13 @@ def get_loans(db: Session, status: str | None = None, member_id: int | None = No
 
 
 def create_loan(db: Session, book_id: int, member_id: int):
-    book = db.query(Book).filter(Book.id == book_id).first()
+    book = db.query(Book).filter(Book.id == book_id, Book.deleted_at.is_(None)).first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     if book.available_copies < 1:
         raise HTTPException(status_code=400, detail="No available copies")
 
-    member = db.query(Member).filter(Member.id == member_id, Member.is_active == True).first()
+    member = db.query(Member).filter(Member.id == member_id, Member.is_active == True, Member.deleted_at.is_(None)).first()
     if not member:
         raise HTTPException(status_code=404, detail="Member not found or inactive")
 

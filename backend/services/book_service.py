@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi import HTTPException
@@ -50,7 +51,7 @@ def get_suggestions(db: Session):
 
 def get_books(db: Session, search: str | None = None, category: str | None = None,
               page: int = 1, limit: int = 20):
-    query = db.query(Book)
+    query = db.query(Book).filter(Book.deleted_at.is_(None))
     if search:
         term = f"%{search}%"
         query = query.filter(
@@ -68,14 +69,14 @@ def get_books(db: Session, search: str | None = None, category: str | None = Non
 
 
 def get_book(db: Session, book_id: int):
-    book = db.query(Book).filter(Book.id == book_id).first()
+    book = db.query(Book).filter(Book.id == book_id, Book.deleted_at.is_(None)).first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
 
 
 def get_book_by_isbn(db: Session, isbn: str):
-    book = db.query(Book).filter(Book.isbn == isbn).first()
+    book = db.query(Book).filter(Book.isbn == isbn, Book.deleted_at.is_(None)).first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
@@ -151,6 +152,6 @@ def delete_book(db: Session, book_id: int):
     book = get_book(db, book_id)
     if book.available_copies < book.total_copies:
         raise HTTPException(status_code=400, detail="Cannot delete book with active loans")
-    db.delete(book)
+    book.deleted_at = datetime.utcnow()
     db.commit()
     return {"detail": "Book deleted"}
