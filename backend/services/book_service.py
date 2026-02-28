@@ -1,9 +1,39 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from fastapi import HTTPException
 
 from models.book import Book
 from schemas.book import BookCreate, BookUpdate
+
+
+def get_suggestions(db: Session):
+    """Return distinct authors, publishers, and categories for autocomplete."""
+    authors = (
+        db.query(Book.author)
+        .filter(Book.author.isnot(None), Book.author != "")
+        .distinct()
+        .order_by(Book.author)
+        .all()
+    )
+    publishers = (
+        db.query(Book.publisher)
+        .filter(Book.publisher.isnot(None), Book.publisher != "")
+        .distinct()
+        .order_by(Book.publisher)
+        .all()
+    )
+    categories = (
+        db.query(Book.category)
+        .filter(Book.category.isnot(None), Book.category != "")
+        .distinct()
+        .order_by(Book.category)
+        .all()
+    )
+    return {
+        "authors": [a[0] for a in authors],
+        "publishers": [p[0] for p in publishers],
+        "categories": [c[0] for c in categories],
+    }
 
 
 def get_books(db: Session, search: str | None = None, category: str | None = None,

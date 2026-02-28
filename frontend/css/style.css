@@ -288,6 +288,50 @@ select.form-control { appearance: auto; }
   gap: 1rem;
 }
 
+/* ===== Autocomplete ===== */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  z-index: 50;
+  background: white;
+  border: 1px solid var(--gray-300);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  max-height: 160px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+
+.autocomplete-list.open {
+  display: block;
+}
+
+.autocomplete-item {
+  padding: .45rem .75rem;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.autocomplete-item mark {
+  background: var(--warning-light);
+  color: inherit;
+  padding: 0;
+  border-radius: 2px;
+}
+
 /* ===== Search Bar ===== */
 .search-bar {
   display: flex;

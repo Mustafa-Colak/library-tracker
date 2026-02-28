@@ -1,5 +1,124 @@
 let currentPage = 1;
 
+/* ---------- Default categories (always shown) ---------- */
+const DEFAULT_CATEGORIES = [
+  'Roman', 'Bilim', 'Tarih', 'Çocuk', 'Ders Kitabı',
+  'Şiir', 'Ansiklopedi', 'Hikaye', 'Biyografi', 'Diğer'
+];
+
+/* ---------- Suggestions cache ---------- */
+let suggestionsCache = null;
+
+async function loadSuggestions() {
+  try {
+    const data = await apiGet('/api/books/suggestions');
+    // Merge default categories with DB categories (unique, sorted)
+    const allCats = [...new Set([...DEFAULT_CATEGORIES, ...data.categories])].sort();
+    suggestionsCache = {
+      authors: data.authors,
+      publishers: data.publishers,
+      categories: allCats,
+    };
+    // Also populate the category filter dropdown on books list page
+    populateCategoryFilter(allCats);
+  } catch {
+    suggestionsCache = {
+      authors: [],
+      publishers: [],
+      categories: [...DEFAULT_CATEGORIES],
+    };
+    populateCategoryFilter(DEFAULT_CATEGORIES);
+  }
+}
+
+function populateCategoryFilter(categories) {
+  const sel = document.getElementById('categoryFilter');
+  if (!sel) return;
+  const current = sel.value;
+  // Keep the first "all categories" option
+  sel.innerHTML = `<option value="" data-i18n="book.all_categories">${t('book.all_categories')}</option>`;
+  categories.forEach(c => {
+    sel.innerHTML += `<option value="${esc(c)}">${esc(c)}</option>`;
+  });
+  sel.value = current;
+}
+
+/* ---------- Autocomplete engine ---------- */
+function setupAutocomplete(inputId, listId, getItems) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
+  if (!input || !list) return;
+
+  let selectedIdx = -1;
+
+  function render(filter) {
+    const items = getItems();
+    const term = (filter || '').toLowerCase();
+    const matches = term
+      ? items.filter(i => i.toLowerCase().includes(term))
+      : items;
+
+    if (!matches.length) {
+      list.classList.remove('open');
+      return;
+    }
+
+    selectedIdx = -1;
+    list.innerHTML = matches.map((item, i) => {
+      let label = esc(item);
+      if (term) {
+        const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        label = label.replace(re, '<mark>$1</mark>');
+      }
+      return `<div class="autocomplete-item" data-index="${i}" data-value="${esc(item)}">${label}</div>`;
+    }).join('');
+    list.classList.add('open');
+  }
+
+  input.addEventListener('focus', () => render(input.value));
+  input.addEventListener('input', () => render(input.value));
+
+  input.addEventListener('keydown', (e) => {
+    const items = list.querySelectorAll('.autocomplete-item');
+    if (!items.length || !list.classList.contains('open')) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIdx = Math.min(selectedIdx + 1, items.length - 1);
+      items.forEach((el, i) => el.classList.toggle('selected', i === selectedIdx));
+      items[selectedIdx]?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIdx = Math.max(selectedIdx - 1, 0);
+      items.forEach((el, i) => el.classList.toggle('selected', i === selectedIdx));
+      items[selectedIdx]?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter' && selectedIdx >= 0) {
+      e.preventDefault();
+      input.value = items[selectedIdx].dataset.value;
+      list.classList.remove('open');
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open');
+    }
+  });
+
+  list.addEventListener('click', (e) => {
+    const item = e.target.closest('.autocomplete-item');
+    if (item) {
+      input.value = item.dataset.value;
+      list.classList.remove('open');
+    }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.classList.remove('open');
+    }
+  });
+}
+
+/* ---------- Books CRUD ---------- */
+
 async function loadBooks(page = 1) {
   currentPage = page;
   const search = document.getElementById('searchInput')?.value || '';
@@ -95,6 +214,8 @@ async function saveBook(e) {
       showToast(t('book.added'));
     }
     document.getElementById('bookDialog').close();
+    // Refresh suggestions cache (new author/publisher/category may have been added)
+    loadSuggestions();
     loadBooks(currentPage);
   } catch (e) {
     showToast(e.message, 'error');
@@ -120,6 +241,13 @@ function searchBooks() {
 document.addEventListener('DOMContentLoaded', async () => {
   await i18nReady;
   if (!initAuth()) return;
+
+  // Load suggestions and setup autocomplete
+  await loadSuggestions();
+  setupAutocomplete('author', 'authorList', () => suggestionsCache?.authors || []);
+  setupAutocomplete('publisher', 'publisherList', () => suggestionsCache?.publishers || []);
+  setupAutocomplete('category', 'categoryList', () => suggestionsCache?.categories || DEFAULT_CATEGORIES);
+
   loadBooks();
   document.getElementById('bookForm')?.addEventListener('submit', saveBook);
 });

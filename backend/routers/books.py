@@ -22,6 +22,12 @@ def list_books(
     return book_service.get_books(db, search=search, category=category, page=page, limit=limit)
 
 
+@router.get("/suggestions")
+def get_suggestions(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Return distinct authors and publishers for autocomplete."""
+    return book_service.get_suggestions(db)
+
+
 @router.get("/barcode/{isbn}", response_model=BookResponse)
 def get_by_isbn(isbn: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return book_service.get_book_by_isbn(db, isbn)

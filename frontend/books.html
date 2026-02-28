@@ -41,12 +41,6 @@
       <input type="text" id="searchInput" class="form-control" data-i18n="common.search" placeholder="Ara..." onkeyup="if(event.key==='Enter')searchBooks()">
       <select id="categoryFilter" class="form-control" onchange="searchBooks()">
         <option value="" data-i18n="book.all_categories">Tum Kategoriler</option>
-        <option value="Roman">Roman</option>
-        <option value="Bilim">Bilim</option>
-        <option value="Tarih">Tarih</option>
-        <option value="Cocuk">Cocuk</option>
-        <option value="Ders Kitabi">Ders Kitabi</option>
-        <option value="Diger">Diger</option>
       </select>
       <button class="btn btn-outline" onclick="searchBooks()" data-i18n="common.search_btn">Ara</button>
     </div>
@@ -93,11 +87,17 @@
       <div class="form-row">
         <div class="form-group">
           <label data-i18n="book.author">Yazar</label>
-          <input type="text" id="author" class="form-control" required>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="author" class="form-control" required autocomplete="off">
+            <div class="autocomplete-list" id="authorList"></div>
+          </div>
         </div>
         <div class="form-group">
           <label data-i18n="book.publisher">Yayinevi</label>
-          <input type="text" id="publisher" class="form-control">
+          <div class="autocomplete-wrapper">
+            <input type="text" id="publisher" class="form-control" autocomplete="off">
+            <div class="autocomplete-list" id="publisherList"></div>
+          </div>
         </div>
       </div>
       <div class="form-row">
@@ -107,15 +107,10 @@
         </div>
         <div class="form-group">
           <label data-i18n="book.category">Kategori</label>
-          <select id="category" class="form-control">
-            <option value="">-</option>
-            <option value="Roman">Roman</option>
-            <option value="Bilim">Bilim</option>
-            <option value="Tarih">Tarih</option>
-            <option value="Cocuk">Cocuk</option>
-            <option value="Ders Kitabi">Ders Kitabi</option>
-            <option value="Diger">Diger</option>
-          </select>
+          <div class="autocomplete-wrapper">
+            <input type="text" id="category" class="form-control" autocomplete="off">
+            <div class="autocomplete-list" id="categoryList"></div>
+          </div>
         </div>
       </div>
       <div class="form-row">
